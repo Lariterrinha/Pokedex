@@ -11,8 +11,10 @@ import java.util.Scanner;
 
 public class Main{
 
-    static String arquivo_binario = "Pokemons.bin";
-    static String clear = "\033[H\033[2J";      // clear no windowns
+    static String arq_csv = "Pokemons.csv";
+    static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados
+    static String indice_id = "indice_id.db";       // Arquivo de indices com Ids e endereços
+    static String clear = "\033[H\033[2J";          // clear no windowns
 
 
     public static void main(String[] args){
@@ -123,16 +125,18 @@ public class Main{
     
 
     // CRUD
-    /*
-        Carregar base de dados "Pokemons.csv" para novo arquivo binario "Pokemons.dbo
-    /***************************** Carregar base de dados **********************************/
+
     class CRUD{
+        
+        
+        // Carregar base de dados ".csv" para novo arquivo binario ".db"
+        /***************************** Carregar base de dados **********************************/
         public static void carregarBaseDados(){
             try{
 
                 // Arquivos
-                RandomAccessFile arq = new RandomAccessFile("Pokemons.csv", "rw");
-                RandomAccessFile arq_bin = new RandomAccessFile(arquivo_binario, "rw");
+                RandomAccessFile arq = new RandomAccessFile(arq_csv, "rw");
+                RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");
 
 
                 // Variaveis auxiliares
@@ -179,7 +183,7 @@ public class Main{
                     pokemon.setAbilities(dados_aux);
 
                     // Escreve no arquivo binario pokemon lido
-                    criarRegistro(pokemon, arq_bin);
+                    criarRegistro(pokemon);
                 }
                 
                 // fecha arquivos
@@ -260,20 +264,23 @@ public class Main{
             System.out.println();
 
             try{
-                criarRegistro(pokemon,new RandomAccessFile(arquivo_binario, "rw"));
+                criarRegistro(pokemon);
                 System.out.println("Registro criado com sucesso");
                  
             }catch(IOException e){
                 System.out.println("Não foi possivel criar registro pokemon");
             }
 
-            //sc.close();
+            //sc.close();  // Fechando o scanner o main não consegue usar
         
         }
 
         /***************************** Criar registro apartir de um objeto pokemon **********************************/
-        public static void criarRegistro(Pokemon pokemon, RandomAccessFile arq){
+        public static void criarRegistro(Pokemon pokemon) throws IOException{
             try{
+
+                RandomAccessFile arq = new RandomAccessFile(arq_dados, "rw");     // Arquivo de dados
+
                 arq.seek(0);
                 int last_id = arq.readInt();
                 
@@ -284,21 +291,28 @@ public class Main{
                 arq.writeInt(pokemon.getId_pokedex());
 
                 // Cria registro e escreve no fim do arquivo
-                arq.seek(arq.length());
+                long pos = arq.length();
+                arq.seek(pos);
                 arq.writeByte(0);                            // Lapide não marcada
                 arq.writeInt(pokemon.toByteArray().length);    // Tamanho do registro
                 arq.write(pokemon.toByteArray());              // Registro
+
+                createIndexId(pokemon.getId_pokedex(),pos);
+                arq.close();
                 
             }
             catch (IOException e){
                 e.printStackTrace();
+                throw(e);
             }
         }
+
+        
 
         /***************************** Lê um registro **********************************/
         public static Pokemon lerRegistro(int registro_id){
             try{
-                RandomAccessFile arq_bin = new RandomAccessFile(arquivo_binario, "rw");         
+                RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
                 byte[] b;
                 byte lapide;
                 int tam_reg;
@@ -344,7 +358,7 @@ public class Main{
         /***************************** Lê conjunto de aquivos **********************************/
         public static Pokemon[] lerConjuntoRegistros(int [] IDs){
             try{
-                RandomAccessFile arq_bin = new RandomAccessFile(arquivo_binario, "rw");         
+                RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
                 byte[] b;
                 byte lapide;
                 int tam_reg;
@@ -393,7 +407,7 @@ public class Main{
         public static boolean atualizarRegistro(int registro_id){
 
             // Abrir arquivo
-            try(RandomAccessFile arq_bin = new RandomAccessFile(arquivo_binario, "rw")){
+            try(RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw")){
                 byte[] b;                           // vetor de bytes a ser lido
                 long lapide_pos;                    // posição inicial do registro (lapide)
                 byte lapide;                        // valor da lapide
@@ -436,6 +450,8 @@ public class Main{
                                     arq_bin.writeInt(pokemon_tmp.toByteArray().length);
                                     arq_bin.write(pokemon_tmp.toByteArray());
                                     System.out.println("Arquivo alterado");
+
+                                    updateIndexId(pokemon_tmp.getId_pokedex(),lapide_pos); // Atualiza indice
                                     
                                 }
                                 return true;
@@ -468,7 +484,7 @@ public class Main{
 
         public static boolean deletarRegistro(int registro_id){
 
-            try(RandomAccessFile arq_bin = new RandomAccessFile(arquivo_binario, "rw")){
+            try(RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw")){
                 byte[] b;
                 long lapide_pos;
                 byte lapide;
@@ -515,6 +531,62 @@ public class Main{
             }
 
             return false;
+        }
+    
+
+        
+        /***************************** ADICIONAR NOVO INDICE **********************************/
+        public static void createIndexId(int id, long pos) throws IOException{
+            try{
+                RandomAccessFile arq_id = new RandomAccessFile(indice_id, "rw");
+
+                // Adiciona ao final do arquivo
+                arq_id.seek(arq_id.length());
+                arq_id.writeByte(0x00);     // Lapide vazia
+                arq_id.writeInt(id);            
+                arq_id.writeLong(pos);
+
+                arq_id.close();
+
+            }
+            catch(IOException e){
+                throw e;
+            }
+            
+        }
+
+        public static void updateIndexId(int id, long pos) throws IOException{
+            try{
+                RandomAccessFile arq_id = new RandomAccessFile(indice_id, "rw");
+                byte lapide;
+                int tam_reg = 1+4+8 ;    // lapide + id + pos 
+
+                
+                // Procura registro
+                while(true){        
+
+                    // Leitura de arquivos cabeçalho
+                    lapide = arq_id.readByte();
+
+                    // Lapide não prenchida ???
+                    if (lapide == 0x00) {                       // Verifica se é o registro certo                   
+                        
+                        if(arq_id.readInt() == id){                    
+                            arq_id.writeLong(pos);
+                            arq_id.close();
+                        }
+                    }else{ 
+                        arq_id.skipBytes(tam_reg);               // Pula arquivo
+                        
+                    }
+
+                }    
+                
+            }
+            catch(IOException e){
+                throw e;
+            }
+            
         }
     }
 }
