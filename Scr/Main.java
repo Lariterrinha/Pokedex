@@ -109,7 +109,7 @@ public class Main{
                     System.out.print("Qual o Id do registro a ser lido? ");
 
                     // Imprime o to string do pokemon com id lido
-                    System.out.println((CRUD.readByIndex(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
+                    System.out.println((DirectIndexCRUD.readByIndex(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
                      
                     break;    
                 

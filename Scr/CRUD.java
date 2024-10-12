@@ -412,7 +412,7 @@ public class CRUD{
                             arq_bin.seek(lapide_pos);
                             arq_bin.writeByte(0xff);                      // Escreve 0xFF na lapide
                             
-                            deleteFromIndex(pokemon_tmp.getId_pokedex());  // Apaga do arquivo de indice
+                            DirectIndexCRUD.deleteFromIndex(pokemon_tmp.getId_pokedex());  // Apaga do arquivo de indice
 
                             System.out.print(pokemon_tmp.toString());
                             System.out.println("  -  Delatado com sucesso");
