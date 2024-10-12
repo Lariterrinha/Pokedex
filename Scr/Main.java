@@ -5,7 +5,7 @@ import java.util.Scanner;
 /*
  * TP01 - Algoritmos e Estrutura de Dados 3
  * Sistema de Armazenamento de dados de Pokemons
- * CRUD - Create, Read, Update e Delete 
+ * CRUD - Create, Read, Update e Delete  
  */
 
 public class Main{
@@ -36,7 +36,8 @@ public class Main{
             System.out.println("4. Ler conjunto de registros");
             System.out.println("5. Atualizar registro");
             System.out.println("6. Deletar registro");
-            System.out.println("7. Sair do Sistema");
+            System.out.println("7. Pesquisar pelo arquivo de indice");
+            System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
             System.out.print("Escolha uma opção: ");
@@ -47,15 +48,20 @@ public class Main{
                 selecao = Integer.parseInt(sc.nextLine());
             }
             catch(Exception e){
-                selecao = 0; // Erro de leitura - Buffer cheio, repete operação
+                selecao = 99999; // Erro de leitura - Buffer cheio, repete operação
             }
             
 
             // MENU
             switch(selecao) {
                 
-                case 0:
+                case 99999:
                     // ERRO DE LEITURA
+                    break;
+
+                case 0:
+                    // Fim programa
+                    System.out.println("Saindo... Até logo!");
                     break;
 
                 case 1:
@@ -71,7 +77,7 @@ public class Main{
                 case 3:
                     // Procurar um unico registro
                     System.out.print("Qual o Id do registro a ser lido? ");
-                    CRUD.lerRegistro( Integer.parseInt(sc.nextLine()));
+                    System.out.println((CRUD.lerRegistro(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
                     break;
 
                 case 4:
@@ -98,14 +104,19 @@ public class Main{
                      
                     break;
 
-                
                 case 7:
-                    // Fim programa
-                    System.out.println("Saindo... Até logo!");
-                    break;
+                    // Procurar um unico registro usando arquivo de indice
+                    System.out.print("Qual o Id do registro a ser lido? ");
+
+                    // Imprime o to string do pokemon com id lido
+                    System.out.println((CRUD.readByIndex(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
+                     
+                    break;    
+                
+                
 
                 default:
-                    System.out.println("\nOpção inválida. Por favor, escolha um número entre 1 e 7.");
+                    System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
             }
             
 
@@ -113,7 +124,7 @@ public class Main{
             sc.nextLine();
             System.out.print(clear);          // Limpa tela (windows)
 
-        }while(selecao != 7);
+        }while(selecao != 0);
 
         sc.close();     
     }

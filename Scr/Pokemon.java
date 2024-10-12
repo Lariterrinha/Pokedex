@@ -195,7 +195,8 @@ public class Pokemon{
         Scanner sc = new Scanner (System.in);
         System.out.print("\033[H\033[2J");          // Limpa tela (windows)
 
-        
+        System.out.println("Alterar pokemon: " + this.toString());
+
         /* MENU */
         //  Pergunta pro usuario oq ele quer mudar e altera
         do {

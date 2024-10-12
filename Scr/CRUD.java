@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Scanner;
 
-// CREATE READ UPDATE E DELETE
+// CREATE READ UPDATE E DELETE (Dados e indices) 
 public class CRUD{
 
     static String arq_csv = "Pokemons.csv";         // Arquivo de dados csv
     static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
-    static String indice_id = "indice_id.db";       // Arquivo de indices com Ids e endereços
+    static String arq_ids = "indice_id.db";       // Arquivo de indices com Ids e endereços
     static String clear = "\033[H\033[2J";          // clear no windowns
      
     /**
@@ -231,7 +231,7 @@ public class CRUD{
                         arq_bin.readFully(b);
                         pokemon.fromByteArray(b);                 // (No) Lê pokemon
                         if(pokemon.getId_pokedex() == registro_id){
-                            System.out.println(pokemon.toString());
+                            //System.out.println(pokemon.toString());
                             arq_bin.close();
                             return pokemon;
                         }
@@ -343,13 +343,19 @@ public class CRUD{
                                 arq_bin.seek(lapide_pos);                   // "Apaga" registro
                                 arq_bin.writeByte(0xff);
 
-                                arq_bin.seek(arq_bin.length());             // Escreve registro atualizado no final do arquivo
+                                // Escreve registro atualizado no final do arquivo
+                                long nova_pos = arq_bin.length();
+                                arq_bin.seek(nova_pos);
                                 arq_bin.writeByte(0x00);                  // Lapide
                                 arq_bin.writeInt(pokemon_tmp.toByteArray().length);
                                 arq_bin.write(pokemon_tmp.toByteArray());
+                                
+                                // Atualiza indice
+                                updateIndexId(pokemon_tmp.getId_pokedex(),nova_pos); 
+
                                 System.out.println("Arquivo alterado");
 
-                                updateIndexId(pokemon_tmp.getId_pokedex(),lapide_pos); // Atualiza indice
+                                
                                 
                             }
                             return true;
@@ -406,6 +412,8 @@ public class CRUD{
                         if(pokemon_tmp.getId_pokedex() == registro_id){     // Encontra pokemon
                             arq_bin.seek(lapide_pos);
                             arq_bin.writeByte(0xff);                      // Escreve 0xFF na lapide
+                            
+                            deleteFromIndex(pokemon_tmp.getId_pokedex());  // Apaga do arquivo de indice
 
                             System.out.print(pokemon_tmp.toString());
                             System.out.println("  -  Delatado com sucesso");
@@ -432,17 +440,21 @@ public class CRUD{
 
 
     
-    /***************************** ADICIONAR NOVO INDICE **********************************/
+    /**
+     * Adiciona um novo registro de indice no arquivo de indices
+     * @param id do novo pokemon
+     * @param pos posição no arquivo de indices
+     * @throws IOException
+     */
     public static void createIndexId(int id, long pos) throws IOException{
         try{
-            RandomAccessFile arq_id = new RandomAccessFile(indice_id, "rw");
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids, "rw");
 
             // Adiciona ao final do arquivo
             arq_id.seek(arq_id.length());
             arq_id.writeByte(0x00);     // Lapide vazia
             arq_id.writeInt(id);            
             arq_id.writeLong(pos);
-
             arq_id.close();
 
         }
@@ -452,39 +464,164 @@ public class CRUD{
         
     }
 
+    /**
+     * Atualiza o endereço(posição) de um id fornecido
+     * @param id do registro
+     * @param pos nova posição no arquivo de dados
+     * @throws IOException  
+     */
     public static void updateIndexId(int id, long pos) throws IOException{
+        
         try{
-            RandomAccessFile arq_id = new RandomAccessFile(indice_id, "rw");
-            byte lapide;
-            int tam_reg = 1+4+4 ;    // lapide + id + pos 
-
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids,"rw");
             
-            // Procura registro
-            while(true){        
+            long pos_index = getIndexPosition(id);      // Obtem a posição no arquivo de indice
 
-                // Leitura de arquivos cabeçalho
-                lapide = arq_id.readByte();
+            // Verifica se registro existe mesmo
+            if(pos_index >0){      
 
-                // Lapide não prenchida ???
-                if (lapide == 0x00) {                                          
-                    
-                    if(arq_id.readInt() == id){             // Verifica se é o registro certo       
-                        arq_id.writeLong(pos);
-                        arq_id.close();
-                        return;
-                    }
-                    
-                }else{ 
-                    arq_id.skipBytes(tam_reg);               // Pula arquivo
-                    
-                }
-
-            }    
+                pos_index += (1+4);                     // Pula lapide e id
+                arq_id.seek(pos_index);         
+                arq_id.writeLong(pos);      // Sobrescreve endereço
+                arq_id.close();
+                System.out.println("Indice de IDs atualizado");
+            }
             
+        }catch(IOException e){
+            e.printStackTrace();
         }
-        catch(IOException e){
-            throw e;
-        }    
     }
 
+    /**
+     * Procura um id de pokemon utilizando indice e retorna o mesmo
+     * @param id do pokemon procurado
+     * @return Pokemon procurado
+     */
+    public static Pokemon readByIndex(int id){
+
+        Pokemon pokemon = new Pokemon();
+
+        try{
+            RandomAccessFile arq = new RandomAccessFile(arq_dados,"rw");
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids,"rw");
+            
+            long pos_index = getIndexPosition(id);      // Obtem a posição no arquivo de indice
+            long pos_data;
+            int tam_reg;
+            byte []b;
+
+            // Verifica se registro existe mesmo
+            if(pos_index >0){      
+
+                pos_index += (1+4);                     // Pula lapide e id
+                arq_id.seek(pos_index);                    
+                pos_data = arq_id.readLong();           // Lê qual a posição no arquivo de dados
+                
+                arq.seek(pos_data);
+                
+                // Verifica se o registro não foi excluido
+                if(arq.readByte() == 0x00){
+
+                    // Lê pokemon e o retorna
+                    tam_reg = arq.readInt();            // Lê tamanho do registro
+                    b = new byte[tam_reg];              // Aloca bytes necessarios
+                    arq.readFully(b);                   // Lê bytes
+                    pokemon.fromByteArray(b);           // Transforma bytes em pokemon
+
+                    arq.close();
+                    arq_id.close();
+                    return pokemon;    
+
+
+                }else{
+                    arq.close();
+                    arq_id.close();
+                    System.out.println("(Erro arquivo apagado)");
+                }
+            }
+            
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        return pokemon;
+
+    }
+
+    /**
+     * Apaga um indice referente a um pokemon
+     * @param id do pokemon a ser deletado
+     * @return bolleano indicando se deu certo a exclusão
+     */
+    public static boolean deleteFromIndex(int id){
+
+        try{
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids,"rw");
+            
+            long pos_index = getIndexPosition(id);        // Obtem a posição no arquivo de indice
+            
+            // Verifica se registro existe mesmo
+            if(pos_index >0){      
+                arq_id.seek(pos_index);                    
+                arq_id.writeByte(0xFF);                 // Marca lapide
+                arq_id.close();
+                return true;
+            }
+            arq_id.close();
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+
+
+    /**
+     * Procura qual em qual byte começa o registro de indice do id requerido;
+     * @param id do registro procurado
+     * @return long indicando a posição do id no arquivo de index (se não encontrado retorna -1)
+     */
+    public static long getIndexPosition(int id){
+
+        try{
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids,"rw");
+            byte lapide;
+            int id_lido;
+            long pos_arq;   
+                
+            try{
+                while(true){    // Vai procurando até EOF
+
+                    // Leitura de arquivos cabeçalho
+                    lapide = arq_id.readByte();
+                    id_lido = arq_id.readInt();
+                    pos_arq = arq_id.readLong();
+                    
+                    // Lapide não prenchida == 0x00
+                    if (lapide == 0x00) {                                        
+
+                        if(id_lido == id){             // Verifica se é o registro certo  
+                            pos_arq = arq_id.getFilePointer();
+                            arq_id.close();     
+                            return ( pos_arq - (1+4+8)); // Retorna posição do arquivo de index
+                        }
+                        
+                    }else{ 
+                        arq_id.skipBytes(4+8);               // Pula indice
+                    }
+                }
+
+            }catch(IOException e){
+                arq_id.close();
+                System.out.println("\nNenhum registro de indice corresponde a sua pesquisa (EOF)");
+            }
+        
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        return -1;  // Não achou
+
+    }
 }
