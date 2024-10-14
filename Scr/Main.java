@@ -16,6 +16,7 @@ public class Main{
     public static void main(String[] args){
         
          // Variaveis auxiliares
+        Pokemon pokemon_tmp; 
         int selecao = -1;      
         int ids[];    
         
@@ -36,7 +37,8 @@ public class Main{
             System.out.println("4. Ler conjunto de registros");
             System.out.println("5. Atualizar registro");
             System.out.println("6. Deletar registro");
-            System.out.println("7. Pesquisar pelo arquivo de indice");
+            System.out.println("7. Pesquisar pelo arquivo de ids");
+            System.out.println("8. Pesquisar pelo arquivo de nomes");
             System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
@@ -71,13 +73,13 @@ public class Main{
 
                 case 2:
                     // Inserir um registro no arquivo
-                    CRUD.criarRegistro();
+                    CRUD.createPokemon();
                     break;
 
                 case 3:
                     // Procurar um unico registro
                     System.out.print("Qual o Id do registro a ser lido? ");
-                    System.out.println((CRUD.lerRegistro(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
+                    System.out.println((CRUD.readPokemon(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
                     break;
 
                 case 4:
@@ -88,39 +90,60 @@ public class Main{
                         System.out.print("Qual o id do " + (i+1) + "º pokemon? ");
                         ids[i] =  Integer.parseInt(sc.nextLine()); 
                     }
-                    CRUD.lerConjuntoRegistros(ids);
+                    CRUD.readPokemons(ids);
                     break;
 
                 case 5:
                     // Atualizar algum registro
                     System.out.print("Qual o Id do registro a ser atualizado? ");
-                    CRUD.atualizarRegistro( Integer.parseInt(sc.nextLine()));
+                    CRUD.updatePokemon( Integer.parseInt(sc.nextLine()));
                     break;
 
                 case 6:                
                     // Deletar regitro (marcar lapide)
                     System.out.print("Qual o Id do registro a ser deletado?");
-                    CRUD.deletarRegistro( Integer.parseInt(sc.nextLine()));
+                    CRUD.deletePokemon( Integer.parseInt(sc.nextLine()));
                      
                     break;
 
                 case 7:
-                    // Procurar um unico registro usando arquivo de indice
-                    System.out.print("Qual o Id do registro a ser lido? ");
+                    // Procurar um unico registro usando arquivo de ids
+                    System.out.print("Qual o Id do pokemon a ser lido? ");
 
                     // Imprime o to string do pokemon com id lido
-                    System.out.println((DirectIndexCRUD.readByIndex(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
+                    
+                    pokemon_tmp = DirectIndex.readPokemon(Integer.parseInt(sc.nextLine()));
+                    
+                    // Verifica se achou o pokemon para imprimir
+                    if(pokemon_tmp.getId_pokedex() != 0){           
+                        System.out.println(pokemon_tmp.toString()); // Imprime pokemon achado
+                    }else{
+                        System.out.println("Pokemon não encontrado");
+                    }
                      
                     break;    
                 
-                
+                case 8:
+                    // Procurar um unico registro usando arquivo de nomes
+                    System.out.print("Qual o nome do pokemon a ser lido? ");
+
+                    // Imprime o to string do pokemon com id lido
+                    pokemon_tmp = NameIndex.readPokemon((sc.nextLine()));
+                    
+                    // Verifica se achou um pokemon para imprimir
+                    if(pokemon_tmp.getId_pokedex() != 0){           
+                        System.out.println(pokemon_tmp.toString()); // Imprime pokemon achado
+                    }else{
+                        System.out.println("Pokemon não encontrado");
+                    }
+                    break;
 
                 default:
                     System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
             }
             
 
-            System.out.println("\n\nPessione qualquer tecla para continuar");
+            System.out.println("\nPessione qualquer tecla para continuar");
             sc.nextLine();
             System.out.print(clear);          // Limpa tela (windows)
 

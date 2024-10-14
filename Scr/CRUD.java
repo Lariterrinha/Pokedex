@@ -68,7 +68,7 @@ public class CRUD{
                 pokemon.setAbilities(dados_aux);
 
                 // Escreve no arquivo binario pokemon lido
-                criarRegistro(pokemon);
+                create(pokemon);
             }
             
             // fecha arquivos
@@ -89,7 +89,7 @@ public class CRUD{
      * @Entradas    Dados de um Pokemon via Scanner do console
      * @Saidas      Novo registro no arquivo de dados (criado pelo metodo de mesmo nome deste)  
      */
-    public static void criarRegistro(){
+    public static void createPokemon(){
 
         Scanner sc = new Scanner(System.in);        // Abre scanner
 
@@ -154,7 +154,7 @@ public class CRUD{
         System.out.println();
 
         try{
-            criarRegistro(pokemon);
+            create(pokemon);
             System.out.println("Registro criado com sucesso");
                 
         }catch(IOException e){
@@ -170,7 +170,7 @@ public class CRUD{
      * @param       Pokemon a ser registrado
      * @Saidas      Novo registro no arquivo de dados  
      */
-    public static void criarRegistro(Pokemon pokemon) throws IOException{
+    public static void create(Pokemon pokemon) throws IOException{
         try{
 
             RandomAccessFile arq = new RandomAccessFile(arq_dados, "rw");     // Arquivo de dados
@@ -191,7 +191,9 @@ public class CRUD{
             arq.writeInt(pokemon.toByteArray().length);    // Tamanho do registro
             arq.write(pokemon.toByteArray());              // Registro
 
-            DirectIndexCRUD.createIndexId(pokemon.getId_pokedex(),pos);
+            long pos_ids = DirectIndex.create(pokemon.getId_pokedex(),pos);     // Cria no indice de ids
+            NameIndex.create(pokemon.getName(),pos_ids);                        // Cria no indice de nomes
+
             arq.close();
             
         }
@@ -207,7 +209,7 @@ public class CRUD{
      * @param       registro_id que indica o id do pokemon a ser lido
      * @Saidas      Pokemon encontrado no arquivo de dados e impressaão do console do toString do pokemon
      */
-    public static Pokemon lerRegistro(int registro_id){
+    public static Pokemon readPokemon(int registro_id){
         try{
             RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
             byte[] b;
@@ -253,7 +255,7 @@ public class CRUD{
 
     
     /***************************** Lê conjunto de aquivos **********************************/
-    public static Pokemon[] lerConjuntoRegistros(int [] IDs){
+    public static Pokemon[] readPokemons(int [] IDs){
         try{
             RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
             byte[] b;
@@ -301,7 +303,7 @@ public class CRUD{
     
 
     /***************************** ATUALIZAR REGISTRO **********************************/
-    public static boolean atualizarRegistro(int registro_id){
+    public static boolean updatePokemon(int registro_id){
 
         // Abrir arquivo
         try(RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw")){
@@ -350,7 +352,7 @@ public class CRUD{
                                 arq_bin.write(pokemon_tmp.toByteArray());
                                 
                                 // Atualiza indice
-                                DirectIndexCRUD.updateIndexId(pokemon_tmp.getId_pokedex(),nova_pos); 
+                                DirectIndex.update(pokemon_tmp.getId_pokedex(),nova_pos); 
 
                                 System.out.println("Arquivo alterado");
 
@@ -384,7 +386,7 @@ public class CRUD{
 
     
     /***************************** DELETAR REGISTRO **********************************/
-    public static boolean deletarRegistro(int registro_id){
+    public static boolean deletePokemon(int registro_id){
 
         try(RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw")){
             byte[] b;
@@ -412,7 +414,8 @@ public class CRUD{
                             arq_bin.seek(lapide_pos);
                             arq_bin.writeByte(0xff);                      // Escreve 0xFF na lapide
                             
-                            DirectIndexCRUD.deleteFromIndex(pokemon_tmp.getId_pokedex());  // Apaga do arquivo de indice
+                            DirectIndex.delete(pokemon_tmp.getId_pokedex());  // Apaga do arquivo de indice de IDs
+                            NameIndex.delete(pokemon_tmp.getName());          // Apaga do arquivo de indices de nomes;
 
                             System.out.print(pokemon_tmp.toString());
                             System.out.println("  -  Delatado com sucesso");
