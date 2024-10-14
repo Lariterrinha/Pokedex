@@ -83,7 +83,7 @@ public class DirectIndex {
             byte []b;
 
             // Verifica se registro existe mesmo
-            if(pos_index >0){      
+            if(pos_index >= 0){      
 
                 pos_index += (1+4);                     // Pula lapide e id
                 arq_id.seek(pos_index);                    

@@ -2,6 +2,7 @@ package Scr;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -94,9 +95,14 @@ public class NameIndex{
                 }
             }
             
+        }catch(EOFException e){
+            System.out.println("(EOF)");
+
         }catch(IOException e){
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+        
         
         return pokemon;
 
@@ -115,7 +121,7 @@ public class NameIndex{
             long pos_index = getPosition(nome);        // Obtem a posição no arquivo de nomes
             
             // Verifica se registro existe mesmo
-            if(pos_index > 0){      
+            if(pos_index >= 0){      
                 arq_nom.seek(pos_index);                    
                 arq_nom.writeByte(0xFF);                 // Marca lapide
                 arq_nom.close();
@@ -168,7 +174,7 @@ public class NameIndex{
                         if((nome_lido.toLowerCase()).contains(nome)){                   // Verifica se é o registro certo  
                             pos_arq = arq.getFilePointer();
                             arq.close();     
-                            return ( pos_arq - tam_registro - 1 - 4);          // Retorna posição no arquivo de nomes
+                            return ( pos_arq - tam_registro - 1 - 4);          // Retorna posição inicial no arquivo de nomes
                         }
 
                     }else{
@@ -177,9 +183,13 @@ public class NameIndex{
                     }
                 }
 
-            }catch(IOException e){
+            }catch(EOFException e){
                 arq.close();
                 System.out.println("\nNenhum registro de indice corresponde a sua pesquisa (EOF)");
+    
+            }catch(IOException e){
+                System.out.println(e.getMessage());
+                e.printStackTrace();
                 throw e;
             }
         
