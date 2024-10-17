@@ -15,13 +15,16 @@ public class Pokemon{
     private int[] attributes;           // Attaque, defesa e HP
     private String classfication;       // Tipo do animal pokemon (rato, passaro, etc)
     private byte generation;            // Geração (1-7) 
+    private long next;              // Proximo com a mesma geração
     private Data date;                  // Data aleatoria baseda no ano da geração 
     private String[] abilities;         // Habilidades do pokemon
    
 
     
     /***************************** CONSTRUTORES **********************************/
-    Pokemon(){}
+    Pokemon(){
+        this.next = -1;
+    }
 
 
     public Pokemon(int id_pokedex, String name, int[] attributes, String classfication, byte generation, Data date,
@@ -33,10 +36,20 @@ public class Pokemon{
         this.generation = generation;
         this.date = date;
         this.abilities = abilities;
+        this.next = -1;
     }
 
 
     /***************************** GETTERS e SETTERS **********************************/
+
+    public long getnext() {
+        return next;
+    }
+
+
+    public void setnext(long next_gen) {
+        this.next = next_gen;
+    }
 
     public int getId_pokedex() {
         return id_pokedex;
@@ -151,7 +164,8 @@ public class Pokemon{
         dos.writeInt(this.attributes[1]);
         dos.writeInt(this.attributes[2]);
         dos.writeUTF(this.classfication);
-        dos.writeByte(generation);
+        dos.writeByte(this.generation);
+        dos.writeLong(this.next);
         dos.writeInt(date.tempo_dias);
 
         dos.writeShort(abilities.length);
@@ -175,6 +189,7 @@ public class Pokemon{
         this.attributes[2] = dis.readInt();
         this.classfication = dis.readUTF();
         this.generation = dis.readByte();
+        this.next = dis.readLong();
         this.date = new Data(dis.readInt());
 
         // Array de strings (habilidades)

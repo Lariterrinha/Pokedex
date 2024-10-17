@@ -15,7 +15,7 @@ public class Main{
 
     public static void main(String[] args){
         
-         // Variaveis auxiliares
+        // Variaveis auxiliares
         Pokemon pokemon_tmp; 
         int selecao = -1;      
         int ids[];    

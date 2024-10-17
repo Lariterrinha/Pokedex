@@ -5,7 +5,6 @@ import java.io.RandomAccessFile;
 
 public class DirectIndex {
 
-
     static String arq_ids = "indice_id.db";         // Arquivo de indices com Ids e endereços
     static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
     

@@ -193,6 +193,7 @@ public class CRUD{
 
             long pos_ids = DirectIndex.create(pokemon.getId_pokedex(),pos);     // Cria no indice de ids
             NameIndex.create(pokemon.getName(),pos_ids);                        // Cria no indice de nomes
+            MultiList.linkTogether(pokemon, pos_ids);                           // Encadeia na multilista
 
             arq.close();
             
@@ -353,6 +354,7 @@ public class CRUD{
                                 
                                 // Atualiza indice
                                 DirectIndex.update(pokemon_tmp.getId_pokedex(),nova_pos); 
+
 
                                 System.out.println("Arquivo alterado");
 
