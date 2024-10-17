@@ -35,6 +35,7 @@ public class DirectIndex {
         
     }
 
+    
     /**
      * Atualiza o endereço(posição) de um id fornecido
      * @param id do registro

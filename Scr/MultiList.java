@@ -51,6 +51,7 @@ public class MultiList {
             }
 
             // Se chegou até siginifica que não achou (não entrou no if generation == generation)
+            // Adiciona ao final do arquivo essa nova geração
             arq_mult.write(pokemon.getGeneration());
             arq_mult.writeInt(1);
             arq_mult.writeLong(position_id);
@@ -104,6 +105,96 @@ public class MultiList {
             pokemon.setnext(new_item);
             arq_bin.write(pokemon.toByteArray());
 
+            arq_id.close();
+            arq_bin.close();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void printList(Byte generation){
+        try{
+            RandomAccessFile arq_mult = new RandomAccessFile(arq_multilista, "rw");
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids, "rw");
+            RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");
+
+            // Leitura no arquivo multilista
+            byte gen_lido;
+            int qtd_lido;
+            long start_id;
+
+            while(arq_mult.getFilePointer() <= (arq_mult.length() - 1 - 4 - 8)){
+
+                // Leitura de registro da multilista
+                gen_lido = arq_mult.readByte();
+                qtd_lido = arq_mult.readInt();
+                start_id = arq_mult.readLong();
+
+                // Se encontrar imprime pokemons da geração requerida
+                if(gen_lido == generation){
+
+                    printList(start_id, qtd_lido);
+                    arq_mult.close();
+                    arq_id.close();
+                    arq_bin.close();
+                    return;
+                }
+            }
+
+            // Se não encontrar imprime mensagem de que não achou
+            System.out.println("\nGeração não encontrada");
+
+            arq_mult.close();
+            arq_id.close();
+            arq_bin.close();
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public static void printList(long start, int quantidade){
+         
+
+        try{
+            RandomAccessFile arq_mult = new RandomAccessFile(arq_multilista, "rw");
+            RandomAccessFile arq_id = new RandomAccessFile(arq_ids, "rw");
+            RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");
+
+
+            // Leitura no arquivo de dados
+            byte[] b;
+            byte lapide;
+            int tam_reg;
+            Pokemon pokemon = new Pokemon();
+            pokemon.setnext(start);
+
+            // Percorre o arquivo de dados imprimindo os registro do start_id selecionado;
+            for(int i = 0; i < quantidade; i++){
+
+                arq_id.seek(pokemon.getnext() + 4 + 1);         // posiciona no arq indices pula lapide e id
+                arq_bin.seek(arq_id.readLong());                // Posiciona no arquivo de dados
+
+                lapide = arq_bin.readByte();
+                tam_reg = arq_bin.readInt();
+
+                // Check de segurança
+                if(lapide == 0x00){
+                    // Lê o pokemone o imprime no console
+                    b = new byte[tam_reg];
+                    arq_bin.readFully(b);
+                    pokemon.fromByteArray(b);
+                    System.out.println(pokemon.toString());
+
+                }else{
+                    arq_bin.skipBytes(tam_reg);
+                }
+            }
+            arq_mult.close();
+            arq_id.close();
             arq_bin.close();
 
         }catch (Exception e) {

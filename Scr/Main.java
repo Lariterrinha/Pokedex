@@ -37,8 +37,9 @@ public class Main{
             System.out.println("4. Ler conjunto de registros");
             System.out.println("5. Atualizar registro");
             System.out.println("6. Deletar registro");
-            System.out.println("7. Pesquisar pelo arquivo de ids");
-            System.out.println("8. Pesquisar pelo arquivo de nomes");
+            System.out.println("7. Pesquisar pelo arquivo de ids (indice direto)");
+            System.out.println("8. Pesquisar pelo arquivo de nomes (indice indireto)");
+            System.out.println("9. Ver pokemons de uma geração especifica (multilista)");
             System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
@@ -138,6 +139,11 @@ public class Main{
                     }
                     break;
 
+                case 9:
+                    System.out.print("Qual a você geração você deseja ver? ");
+                    MultiList.printList(Byte.parseByte(sc.nextLine()));
+
+                    break;
                 default:
                     System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
             }
