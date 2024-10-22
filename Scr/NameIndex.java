@@ -136,8 +136,31 @@ public class NameIndex{
         return false;
     }
 
+    public static void update(String nome_antigo, String novo_nome){
+        try{
+            RandomAccessFile arq = new RandomAccessFile(arq_nomes,"rw");
+            long pos = getPosition(nome_antigo);
+            long pos_id;
+            
 
+            if(nome_antigo.length() <= novo_nome.length()){
+                arq.skipBytes(5);
+                arq.writeUTF(novo_nome);
+            }else{
+                arq.seek(pos);
+                arq.write(0xFF);                    // Apaga registro atual
+                arq.skipBytes(arq.readInt() - 4);
+                pos_id = arq.readInt();
+                create(novo_nome, pos_id);
+            }
+                    
+            arq.close();
+                        
+        }catch(IOException e){
+            System.out.println("Erro ao atualizar o arquivo de nomes");
 
+        }
+    }
     /**
      * Procura a primeira ocorrencia (em qual byte começa) o registro com o nome requerido
      * A função não é case sensitive
@@ -174,7 +197,7 @@ public class NameIndex{
                         if((nome_lido.toLowerCase()).contains(nome)){                   // Verifica se é o registro certo  
                             pos_arq = arq.getFilePointer();
                             arq.close();     
-                            return ( pos_arq - tam_registro - 1 - 4);          // Retorna posição inicial no arquivo de nomes
+                            return ( pos_arq - tam_registro - 1 - 4);          // Retorna posição do registro no arquivo de nomes
                         }
 
                     }else{

@@ -80,7 +80,17 @@ public class Main{
                 case 3:
                     // Procurar um unico registro
                     System.out.print("Qual o Id do registro a ser lido? ");
-                    System.out.println((CRUD.readPokemon(Integer.parseInt(sc.nextLine()))).toString()); // Imprime pokemon achado
+                    
+                    // Imprime o to string do pokemon com id lido
+                    pokemon_tmp = (CRUD.readPokemon(Integer.parseInt(sc.nextLine())));
+                    
+                    // Verifica se achou o pokemon para imprimir
+                    if(pokemon_tmp != null){           
+                        System.out.println(pokemon_tmp.toString()); // Imprime pokemon achado
+                    }else{
+                        System.out.println("Pokemon não encontrado");
+                    }
+
                     break;
 
                 case 4:
@@ -112,7 +122,6 @@ public class Main{
                     System.out.print("Qual o Id do pokemon a ser lido? ");
 
                     // Imprime o to string do pokemon com id lido
-                    
                     pokemon_tmp = DirectIndex.readPokemon(Integer.parseInt(sc.nextLine()));
                     
                     // Verifica se achou o pokemon para imprimir

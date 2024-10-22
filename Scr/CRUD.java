@@ -193,7 +193,7 @@ public class CRUD{
 
             long pos_ids = DirectIndex.create(pokemon.getId_pokedex(),pos);     // Cria no indice de ids
             NameIndex.create(pokemon.getName(),pos_ids);                        // Cria no indice de nomes
-            MultiList.linkTogether(pokemon, pos_ids);                           // Encadeia na multilista
+            MultiList.chain(pokemon);                                           // Encadeia na multilista
 
             arq.close();
             
@@ -291,7 +291,7 @@ public class CRUD{
 
                 }
             }catch(IOException e){
-                System.out.println("(EOF)");                        // End of File
+                System.out.println("ERRO EOF: Algum pokemon não foi encontrado");                        // End of File
                 arq_bin.close();
             }
 
@@ -402,6 +402,8 @@ public class CRUD{
             
             // Vai lendo até exceção EOF
             try{
+                MultiList.unchain(registro_id);  // Desencadeia na multilista
+
                 while(true){           
                     // Leitura de arquivos cabeçalho
                     lapide_pos = arq_bin.getFilePointer();                      // Posição da lapide

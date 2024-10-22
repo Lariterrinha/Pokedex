@@ -232,7 +232,9 @@ public class Pokemon{
                 // Atualização nome
                 case 1:
                     System.out.print("Novo Nome: ");
-                    this.setName(sc.nextLine());
+                    String new_name = sc.nextLine();
+                    NameIndex.update(new_name, this.name);
+                    this.setName(new_name);
                     break;
 
                 // Atualização atributos (ataque, defesa, HP)
@@ -257,7 +259,12 @@ public class Pokemon{
                 // Atualização geração
                 case 4:
                     System.out.print("Nova Geração: ");
-                    this.setGeneration(Byte.parseByte(sc.nextLine()));
+                    byte geracao = Byte.parseByte(sc.nextLine());
+
+                    // Atualiza multilista e Pokemon com nova geração
+                    MultiList.unchain(this.id_pokedex);
+                    this.setGeneration(geracao);
+                    MultiList.chain(this);
                     break;
 
                 // Atualização data
