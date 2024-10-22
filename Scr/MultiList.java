@@ -228,11 +228,13 @@ public class MultiList {
 
                 
                 if(gen_lido == generation){
+                    arq_mult.close();
                     return multilist_start;                    // Operação bem sucedida
                 }
             }
 
             arq_mult.close();
+
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -256,7 +258,6 @@ public class MultiList {
 
             // Leitura no arquivo de dados
             byte[] b;
-            byte lapide;
             int tam_reg;
             Pokemon pokemon_atual = new Pokemon();
             Pokemon pokemon_anterior = new Pokemon();
@@ -276,7 +277,7 @@ public class MultiList {
                 arq_id.seek(posicao_atual_ids + 4 + 1);               // Posiciona no arq indices pula lapide e id
                 arq_bin.seek(arq_id.readLong());                      // Posiciona no arquivo de dados
                 
-                lapide = arq_bin.readByte();
+                arq_bin.readByte();
                 tam_reg = arq_bin.readInt();
 
                 // Lê o pokemone_atual
@@ -312,7 +313,7 @@ public class MultiList {
 
         }catch (EOFException e) {
             System.out.println("(EOF)");
-            
+
         }catch (Exception e) {
             e.printStackTrace();
         }
