@@ -11,12 +11,12 @@ public class CRUD{
     static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
     static String clear = "\033[H\033[2J";          // clear no windowns
      
+
     /**
-     * Carrega base de dados ".csv" para novo arquivo binario ".db", o nome dos arquivos são estaticos dentro da classe   
-     * @Entradas    Nome arquivo csv (String statica) + Nome arquivo binario (String statica)
+     * Carrega base de dados ".csv" para novo arquivo binario ".db", o nome dos arquivos são estaticos dentro da classe
      * @Saidas      Arquivo binario com dados do csv  
      */
-     public static void carregarBaseDados(){
+    public static void carregarBaseDados(){
         try{
 
             // Arquivos
@@ -208,7 +208,7 @@ public class CRUD{
     /**
      * Lê um registro a partir de um ID de pokemon   
      * @param       registro_id que indica o id do pokemon a ser lido
-     * @Saidas      Pokemon encontrado no arquivo de dados e impressaão do console do toString do pokemon
+     * @return      Pokemon encontrado no arquivo de dados e impressão no console do toString do pokemon
      */
     public static Pokemon readPokemon(int registro_id){
         try{
@@ -256,6 +256,11 @@ public class CRUD{
 
     
     /***************************** Lê conjunto de aquivos **********************************/
+    /**
+     * Lê um conjunto de registros a partir de um array de IDs de pokemon
+     * @param IDs array de IDs de pokemons a serem lidos
+     * @return array de pokemons lidos
+     */
     public static Pokemon[] readPokemons(int [] IDs){
         try{
             RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
@@ -304,6 +309,11 @@ public class CRUD{
     
 
     /***************************** ATUALIZAR REGISTRO **********************************/
+    /**
+     * Atualiza um registro de pokemon
+     * @param registro_id do pokemon a ser atualizado
+     * @return booleano indicando se deu certo a atualização
+     */
     public static boolean updatePokemon(int registro_id){
 
         // Abrir arquivo
@@ -388,6 +398,11 @@ public class CRUD{
 
     
     /***************************** DELETAR REGISTRO **********************************/
+    /**
+     * Deleta um registro de pokemon (marca lapide)
+     * @param registro_id do pokemon a ser deletado
+     * @return booleano indicando se deu certo a exclusão
+     */
     public static boolean deletePokemon(int registro_id){
 
         try(RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw")){

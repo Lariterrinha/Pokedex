@@ -15,7 +15,7 @@ public class Pokemon{
     private int[] attributes;           // Attaque, defesa e HP
     private String classfication;       // Tipo do animal pokemon (rato, passaro, etc)
     private byte generation;            // Geração (1-7) 
-    private long next;              // Proximo com a mesma geração
+    private long next;                  // Proximo com a mesma geração
     private Data date;                  // Data aleatoria baseda no ano da geração 
     private String[] abilities;         // Habilidades do pokemon
    
@@ -233,7 +233,7 @@ public class Pokemon{
                 case 1:
                     System.out.print("Novo Nome: ");
                     String new_name = sc.nextLine();
-                    NameIndex.update(new_name, this.name);
+                    NameIndex.update(this.name, new_name);
                     this.setName(new_name);
                     break;
 

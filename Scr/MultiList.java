@@ -7,9 +7,14 @@ import java.io.RandomAccessFile;
 public class MultiList {
     
     static String arq_multilista = "indice_multilista.db";  // Arquivo de dados em binario
-    static String arq_ids = "indice_id.db";         // Arquivo de indices com Ids e endereços
-    static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
+    static String arq_ids = "indice_id.db";                 // Arquivo de indices com Ids e endereços
+    static String arq_dados = "Pokemons_dados.db";          // Arquivo de dados em binario
     
+    /**
+     * Encadeia um novo pokemon na multilista
+     * @param pokemon a ser encadeado
+     * @return true se operação bem sucedida e false se não
+     */
     public static boolean chain(Pokemon pokemon){
        
        try{
@@ -63,7 +68,6 @@ public class MultiList {
             arq_id.close();
             arq_mult.close();
 
-
         }catch (EOFException e) {
             return false;
 
@@ -74,6 +78,11 @@ public class MultiList {
         return false;
     }
 
+    /**
+     * Adiciona um novo item ao final de uma lista
+     * @param start posição (no arquivo de id) do primeiro item da lista
+     * @param new_item posição (no arquivo de id) do novo item a ser adicionado
+     */
     public static void addToEnd(long start, long new_item){
         try{
             RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");
@@ -116,6 +125,10 @@ public class MultiList {
         }
     }
 
+    /**
+     * Imprime os pokemons de uma geração
+     * @param generation
+     */
     public static void printList(Byte generation){
         try{
             RandomAccessFile arq_mult = new RandomAccessFile(arq_multilista, "rw");
@@ -158,7 +171,11 @@ public class MultiList {
     }
 
 
-
+    /**
+     * Imprime uma quantidade de registros a partir de um start_id
+     * @param start posição do primeiro registro a ser impresso
+     * @param quantidade quantidade de registros a serem impressos
+     */
     public static void printList(long start, int quantidade){
          
 
@@ -205,6 +222,11 @@ public class MultiList {
         }
     }
 
+    /**
+     * Retorna a posição do primeiro registro de uma geração na multilista
+     * @param generation 
+     * @return posição do primeiro registro da geração
+     */
     public static long getfirst(byte generation){
         long end = 0;
         
@@ -241,8 +263,13 @@ public class MultiList {
         return end;
 
     }
+
+    /**
+     * Desencadeia um pokemon da multilista
+     * @param id do pokemon a ser desencadeado
+     */
     public static void unchain(int id){
-        //try{
+        
         try{
             RandomAccessFile arq_mult = new RandomAccessFile(arq_multilista, "rw");
             RandomAccessFile arq_id = new RandomAccessFile(arq_ids, "rw");
@@ -312,7 +339,7 @@ public class MultiList {
             arq_bin.close();
 
         }catch (EOFException e) {
-            System.out.println("(EOF)");
+            System.out.println("(EOF Multilista)");
 
         }catch (Exception e) {
             e.printStackTrace();

@@ -14,9 +14,9 @@ public class NameIndex{
     
     /**
      * Adiociona um registro de nome e posição no final do arquivo de indice de nomes;
-     * @param nome_String
-     * @param position
-     * @throws IOException
+     * @param nome_String do novo pokemon
+     * @param position posição no arquivo de ids
+     * @throws IOException 
      */
     public static void create(String nome_String, long position) throws IOException{
 
@@ -36,7 +36,12 @@ public class NameIndex{
         
     }
 
-    // NÃO TEM UPDATE, já que é um arquivo indireto
+    /**
+     * Lê um registro de pokemon no arquivo de dados a partir de um nome
+     * Não é case sensitive e compara os nomes parcialmente, ou seja, utilizando contains
+     * @param nome do pokemon a ser lido
+     * @return Pokemon lido
+     */
     public static Pokemon readPokemon(String nome){
 
         Pokemon pokemon = new Pokemon();
@@ -141,29 +146,33 @@ public class NameIndex{
             RandomAccessFile arq = new RandomAccessFile(arq_nomes,"rw");
             long pos = getPosition(nome_antigo);
             long pos_id;
-            
 
-            if(nome_antigo.length() <= novo_nome.length()){
-                arq.skipBytes(5);
+            arq.seek(pos + 5 + nome_antigo.length() + 2);      // Pula lapide, tamanho do registro e nome
+            pos_id = arq.readLong();
+            arq.seek(pos);                                    // Volta para o inicio do registro
+                
+
+            if(novo_nome.length() <= nome_antigo.length()){
+                arq.skipBytes(5);                    // Pula lapide e indicador de tamanho do registro
                 arq.writeUTF(novo_nome);
+                arq.writeLong(pos_id);
+                arq.close();
             }else{
-                arq.seek(pos);
                 arq.write(0xFF);                    // Apaga registro atual
-                arq.skipBytes(arq.readInt() - 4);
-                pos_id = arq.readInt();
+                arq.close();
                 create(novo_nome, pos_id);
             }
-                    
-            arq.close();
+           
                         
         }catch(IOException e){
             System.out.println("Erro ao atualizar o arquivo de nomes");
 
         }
     }
+
     /**
      * Procura a primeira ocorrencia (em qual byte começa) o registro com o nome requerido
-     * A função não é case sensitive
+     * Não é case sensitive e compara os nomes parcialmente, ou seja, utilizando contains
      * @param nome do pokemon do registro procurado
      * @return long indicando a posição do nome no arquivo de ids (se não encontrado retorna -1)
      */
@@ -224,6 +233,13 @@ public class NameIndex{
 
     }
 
+    /**
+     * Transforma um nome e posição em um array de bytes
+     * @param nome do pokemon
+     * @param position no arquivo de ids
+     * @return array de bytes
+     * @throws IOException
+     */
     public static byte[] toByteArray(String nome, long position) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
