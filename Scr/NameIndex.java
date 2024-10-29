@@ -8,9 +8,9 @@ import java.io.RandomAccessFile;
 
 public class NameIndex{
 
-    static String arq_nomes = "indice_nomes.db";  // Arquivo de dados em binario
-    static String arq_ids = "indice_id.db";         // Arquivo de indices com Ids e endereços
-    static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
+    static String arq_nomes = "data/indice_nomes.db";  // Arquivo de dados em binario
+    static String arq_ids = "data/indice_id.db";         // Arquivo de indices com Ids e endereços
+    static String arq_dados = "data/Pokemons_dados.db";  // Arquivo de dados em binario
     
     /**
      * Adiociona um registro de nome e posição no final do arquivo de indice de nomes;

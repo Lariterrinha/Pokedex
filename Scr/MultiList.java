@@ -6,9 +6,9 @@ import java.io.RandomAccessFile;
 
 public class MultiList {
     
-    static String arq_multilista = "indice_multilista.db";  // Arquivo de dados em binario
-    static String arq_ids = "indice_id.db";                 // Arquivo de indices com Ids e endereços
-    static String arq_dados = "Pokemons_dados.db";          // Arquivo de dados em binario
+    static String arq_multilista = "data/indice_multilista.db";  // Arquivo de dados em binario
+    static String arq_ids = "data/indice_id.db";                 // Arquivo de indices com Ids e endereços
+    static String arq_dados = "data/Pokemons_dados.db";          // Arquivo de dados em binario
     
     /**
      * Encadeia um novo pokemon na multilista

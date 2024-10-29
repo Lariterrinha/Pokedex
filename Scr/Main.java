@@ -153,11 +153,18 @@ public class Main{
                     MultiList.printList(Byte.parseByte(sc.nextLine()));
 
                     break;
+
+                case 10:
+                    System.out.print("Teeste");
+                    LZWCompression lzw = new LZWCompression("data/indice_multilista.db".toString());
+                    lzw.compress();
+                    lzw = new LZWCompression("data/indice_multilista.db.lzw".toString());
+                    lzw.decompress();
+                    break;
                 default:
                     System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
             }
             
-
             System.out.println("\nPessione qualquer tecla para continuar");
             sc.nextLine();
             System.out.print(clear);          // Limpa tela (windows)

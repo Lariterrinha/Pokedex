@@ -5,8 +5,8 @@ import java.io.RandomAccessFile;
 
 public class DirectIndex {
 
-    static String arq_ids = "indice_id.db";         // Arquivo de indices com Ids e endereços
-    static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
+    static String arq_ids = "data/indice_id.db";         // Arquivo de indices com Ids e endereços
+    static String arq_dados = "data/Pokemons_dados.db";  // Arquivo de dados em binario
     
 
     /**
@@ -50,7 +50,7 @@ public class DirectIndex {
             long pos_index = getPosition(id);      // Obtem a posição no arquivo de indice
 
             // Verifica se registro existe mesmo
-            if(pos_index >0){      
+            if(pos_index >= 0){      
 
                 pos_index += (1+4);                     // Pula lapide e id
                 arq_id.seek(pos_index);         

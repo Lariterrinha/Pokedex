@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class CRUD{
 
     static String arq_csv = "Pokemons.csv";         // Arquivo de dados csv
-    static String arq_dados = "Pokemons_dados.db";  // Arquivo de dados em binario
+    static String arq_dados = "data/Pokemons_dados.db";  // Arquivo de dados em binario
     static String clear = "\033[H\033[2J";          // clear no windowns
      
 
@@ -364,7 +364,7 @@ public class CRUD{
                                 
                                 // Atualiza indice
                                 DirectIndex.update(pokemon_tmp.getId_pokedex(),nova_pos); 
-
+                                
 
                                 System.out.println("Arquivo alterado");
 
