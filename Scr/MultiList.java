@@ -38,9 +38,6 @@ public class MultiList {
                 position_qtd = arq_mult.getFilePointer();                   // Posição de onde está a quatidade de registros
                 qtd_lido = arq_mult.readInt();
                 start_id = arq_mult.readLong();
-
-                
-
                 
                 if(gen_lido == pokemon.getGeneration()){
                     

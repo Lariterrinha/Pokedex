@@ -3,6 +3,27 @@
   "configurations": [
     {
       "type": "java",
+      "name": "KMP_melhorado",
+      "request": "launch",
+      "mainClass": "KMP_melhorado",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "KMP_prefixo",
+      "request": "launch",
+      "mainClass": "KMP_prefixo",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "KMP_prefixo",
+      "request": "launch",
+      "mainClass": "Scr.KMP_prefixo",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Scr.Main",

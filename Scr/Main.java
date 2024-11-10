@@ -1,5 +1,6 @@
 package Scr;
 
+import java.io.File;
 import java.util.Scanner;
 
 /*
@@ -40,6 +41,7 @@ public class Main{
             System.out.println("7. Pesquisar pelo arquivo de ids (indice direto)");
             System.out.println("8. Pesquisar pelo arquivo de nomes (indice indireto)");
             System.out.println("9. Ver pokemons de uma geração especifica (multilista)");
+            System.out.println("10. Opções de Backup (LZW)");
             System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
@@ -155,11 +157,7 @@ public class Main{
                     break;
 
                 case 10:
-                    System.out.print("Teeste");
-                    LZWCompression lzw = new LZWCompression("data/indice_multilista.db".toString());
-                    lzw.compress();
-                    lzw = new LZWCompression("data/indice_multilista.db.lzw".toString());
-                    lzw.decompress();
+                    gerencia_de_backups();
                     break;
                 default:
                     System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
@@ -174,6 +172,150 @@ public class Main{
         sc.close();     
     }
 
+    static public void gerencia_de_backups(){
+        Scanner sc = new Scanner(System.in);
+        int selecao = -1;
+
+        System.out.print(clear);          // Limpa tela (windows)
+
+        do{
+            System.out.println();
+            System.out.println("=====================================");
+            System.out.println("          Opções de Backup           ");
+            System.out.println("=====================================");
+            System.out.println("1. Gerar um backup do sistema");
+            System.out.println("2. Recuperar um backup");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.println("=====================================");
+            
+            System.out.print("Escolha uma opção: ");
+
+            // Leitura da seleção
+            try{
+                selecao = Integer.parseInt(sc.nextLine());
+            }
+            catch(Exception e){
+                selecao = 99999; // Erro de leitura - Buffer cheio, repete operação
+            }
+
+            switch(selecao) {
+                case 99999:
+                    // ERRO DE LEITURA
+                    break;
+
+                case 0:
+                    // Fim programa
+                    return;
+
+                case 1:
+                    // Gerar backup do sistema atual
+                    gerar_backups();
+                    break;
+
+                case 2:
+                    // Descomprimir arquivos
+                    recuperar_backup();
+                    break;
+
+                default:
+                    System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
+            }
+            
+            System.out.println("\nPessione qualquer tecla para continuar");
+            sc.nextLine();
+            System.out.print(clear);          // Limpa tela (windows)
+
+        }while(selecao != 0);
+
+        //sc.close();    // Não fechar o scanner pois da erro  
+
+    }
+
+    /**
+     * Recupera um backup da pasta de backups (escolhido pelo usuario)
+     */
+    public static void recuperar_backup(){
+        Scanner sc = new Scanner(System.in);
+        int selecao = -1;
+
+        // Lista de backups disponiveis na pasta de backups
+        File pasta_backups = new File("backups/");
+        File [] arquivos = pasta_backups.listFiles();
+
+        do{
+            System.out.print(clear);          // Limpa tela (windows)
+
+            System.out.println();
+            System.out.println("=====================================");
+            System.out.println("     Qual backup deseja recuperar?");
+            System.out.println("=====================================");
+            
+            for(int i = 0; i < arquivos.length; i++){
+                System.out.println((i+1) + ". " + arquivos[i].getName());
+            }
+
+            System.out.println("=====================================");
+
+            System.out.print("Escolha uma opção válida: ");
+
+            // Leitura da seleção
+            try{
+                selecao = Integer.parseInt(sc.nextLine());
+            }
+            catch(Exception e){
+                selecao = 99999; // Erro de leitura - Buffer cheio, repete operação
+            }
+            
+            pasta_backups = new File(arquivos[selecao-1].getAbsolutePath());
+            
+        }while(selecao < 1 || selecao > arquivos.length);
+
+        // Lista de arquivos na pasta de backup escolhida
+        arquivos = pasta_backups.listFiles();
+        String novo_nome;
+
+        // Comprime todos os arquivos na pasta data e poe na pasta backup
+        for(int i = 0; i < arquivos.length; i++){
+            LZWCompression lzw = new LZWCompression(pasta_backups.getAbsolutePath() + "/"+ arquivos[i].getName());     // arquivo a ser compactado
+            novo_nome = arquivos[i].getName();
+            novo_nome = novo_nome.substring(0, novo_nome.length() - 4);
+            lzw.decompress("data/" + novo_nome);  // arquivo compactado
+            
+        }
+        System.out.println("Operação terminada");
+            
+    }
+
+    /**
+     * Gera um backup do sistema atual
+     */
+    public static void gerar_backups(){
+        
+        long versao = System.currentTimeMillis();                                       // Pra colocar no nome da pasta
+        
+        // Pasta com arquivos originais
+        File pasta_data = new File("data/");
+        
+        // Criação da pasta backup
+        File pasta_backup = new File("backups/backup_" + versao + "/");    
+        if (pasta_backup.mkdir()) {
+            System.out.println("Novo diretório com backups criado com sucesso\n");
+        } else {
+            System.out.println("Falha ao criar o diretório");
+            return;
+        }
+
+        // Lista de arquivos na pasta data
+        File [] arquivos = pasta_data.listFiles();
+
+        // Comprime todos os arquivos na pasta data e poe na pasta backup
+        for(int i = 0; i < arquivos.length; i++){
+                LZWCompression lzw = new LZWCompression(arquivos[i].getAbsolutePath());     // arquivo a ser compactado
+                lzw.compress("backups/backup_" + versao + "/"+ arquivos[i].getName());      // arquivo compactado
+                
+        }
+
+    }
 
 }
 

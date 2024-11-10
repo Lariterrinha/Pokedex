@@ -1,8 +1,10 @@
 Videos sobre o trabalho no Youtube:
 
-    Primeira versão (TP01)
+    Primeira versão (TP01) - CRUD
     https://www.youtube.com/watch?v=t8i-6GOvQ_Q
 
-    Segunda versão (TP02)
+    Segunda versão (TP02)  - Arquivos de Indice
     https://www.youtube.com/watch?v=AruVzrQ1dQ0 
     
+    Terceira versão (TP03) -  Compressão com LZW
+    https://www.youtube.com/watch?v=jmLP_aFsqYE
