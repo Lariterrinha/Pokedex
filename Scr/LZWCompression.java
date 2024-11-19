@@ -61,6 +61,7 @@ public class LZWCompression{
         int int_byte_lido;
         String caracter_lido;
         String combinado = "";
+        long start_time = System.currentTimeMillis();
 
         try{
             RandomAccessFile arq_compactado = new RandomAccessFile(novo_caminho + ".lzw", "rw");
@@ -75,7 +76,7 @@ public class LZWCompression{
             while(arq.getFilePointer() < arq.length()){
 
                 // Lê um caracter e concatena ao combinado (caracter do dicionario)
-                int_byte_lido = arq.readByte() & (int)0x0FF ;
+                int_byte_lido = arq.readByte() & (int)0x0FF ;   // Mascara para pegar apenas os 8 bits/1 byte
                 caracter_lido = (char)(int_byte_lido) + "";
                 combinado += caracter_lido; 
 
@@ -99,7 +100,7 @@ public class LZWCompression{
                 arq_compactado.writeShort(ultima_pesquisa_bem_sucedida);
 
 
-            System.out.print("Economia arquivo " + novo_caminho.split("/")[novo_caminho.split("/").length-1] + ": \t\t"+ (tamanho_original - arq_compactado.length()) + " bytes\t || ");
+            System.out.print("Economia arquivo " + novo_caminho.split("/")[novo_caminho.split("/").length-1] + ":\t\t"+ (System.currentTimeMillis() - start_time) + " ms\t || ");
             System.out.printf("%.2f%% do tamanho original\n",(arq_compactado.length()/(float)tamanho_original) * 100);
             
             arq_compactado.close();

@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class KMP_prefixo {
+public class KMP {
     //fução de prefixo kmp melhorado em java (usando -1)
     /**
      * Recebe uma string via scanner e mostra a função de prefixo (pi) dela
