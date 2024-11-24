@@ -3,6 +3,34 @@
   "configurations": [
     {
       "type": "java",
+      "name": "KMP",
+      "request": "launch",
+      "mainClass": "Scr.KMP",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "Boyer_Moore",
+      "request": "launch",
+      "mainClass": "Scr.Boyer_Moore",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "Forca_Bruta",
+      "request": "launch",
+      "mainClass": "Scr.Forca_Bruta",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "KMP",
+      "request": "launch",
+      "mainClass": "KMP",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
       "name": "KMP_melhorado",
       "request": "launch",
       "mainClass": "KMP_melhorado",

@@ -144,6 +144,15 @@ public class Pokemon{
                 + ", generation = " + generation + ", Data = " +  this.date.toString()  +" ]";
     }
 
+    public String toString2() {
+        String texto =  id_pokedex + " " + name + " " + attributes[0] + " " + attributes[1] + " " + attributes[2] + " " 
+            + classfication + " " + generation + " " + date.toString() + " " + abilities.length;
+        for (String string : abilities) {
+            texto += " " + string;
+        }
+        return texto;
+    }
+
     // Cria um clone deste objeto
     public Pokemon clone() {
 

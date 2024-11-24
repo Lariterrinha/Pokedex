@@ -2,6 +2,7 @@ package Scr;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 // CREATE READ UPDATE E DELETE (Dados e indices) 
@@ -307,6 +308,52 @@ public class CRUD{
         return null;
     }
     
+
+    /************************* Retorna todos os pokemons da base de dados ****************************/
+   /**
+    * Retorna todos os pokemons da base de dados
+    * @return array de pokemons
+    */
+    public static ArrayList<Pokemon> Pokemons_dados(){
+
+        byte[] b;
+        byte lapide;
+        int tam_reg;
+        Pokemon pokemon_tmp = new Pokemon();
+        ArrayList<Pokemon> pokemon = new ArrayList<Pokemon>();
+
+        try{
+            RandomAccessFile arq_bin = new RandomAccessFile(arq_dados, "rw");         
+            
+            arq_bin.seek(4);    // Inicio (Pulando cabeçalho)    
+
+            // Vai lendo até final do arquivo
+            while(arq_bin.getFilePointer() < arq_bin.length()){
+
+                // Leitura de arquivos cabeçalho
+                lapide = arq_bin.readByte();
+                tam_reg = arq_bin.readInt();
+                b = new byte[tam_reg];
+
+                if (lapide == 0x00) {                             // É lapide não prenchida ???
+                    arq_bin.readFully(b);
+                    pokemon_tmp.fromByteArray(b);                 // (No) Lê pokemon
+                    pokemon.add(pokemon_tmp.clone());             // Adiciona a lista
+                }else{
+                    arq_bin.skipBytes(tam_reg);                   // (Yes) Pula arquivo
+                }
+
+            }
+
+            arq_bin.close();
+            return pokemon;
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        return null;
+        
+        
+    }
 
     /***************************** ATUALIZAR REGISTRO **********************************/
     /**

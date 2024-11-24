@@ -1,6 +1,8 @@
 package Scr;
 
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*
@@ -42,6 +44,7 @@ public class Main{
             System.out.println("8. Pesquisar pelo arquivo de nomes (indice indireto)");
             System.out.println("9. Ver pokemons de uma geração especifica (multilista)");
             System.out.println("10. Opções de Backup (LZW)");
+            System.out.println("11. Opções de casamento de padões (Força Bruta/KMP/Boyer-Moore)");
             System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
@@ -158,6 +161,9 @@ public class Main{
 
                 case 10:
                     gerencia_de_backups();
+                    break;
+                case 11:
+                    casamento_de_padroes();
                     break;
                 default:
                     System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
@@ -315,6 +321,92 @@ public class Main{
                 
         }
 
+    }
+
+    public static void casamento_de_padroes(){
+        Scanner sc = new Scanner(System.in);
+        int selecao = -1;
+
+        System.out.print(clear);          // Limpa tela (windows)
+
+        // Cria o texto para ser usado nos algoritmos
+        String texto = "";
+        ArrayList<Pokemon> pokemons = CRUD.Pokemons_dados();
+        for(int i= 0; i < pokemons.size(); i++){
+            texto += pokemons.get(i).toString2(); 
+        }
+
+        // Solicita padrão ao usuario
+        System.out.println("\nQual o seu padrao? " );
+        String padrao =  sc.nextLine();
+
+        int posicao;
+        do{
+            System.out.println();
+            System.out.println("=====================================");
+            System.out.println("     Opções de casamento de padrões  ");
+            System.out.println("=====================================");
+            System.out.println("1. Força Bruta");
+            System.out.println("2. KMP");
+            System.out.println("3. Boyer-Moore");
+            System.out.println("4. Vizualizar texto");
+            System.out.println("0. Voltar ao menu principal");
+            System.out.println("=====================================");
+            
+            System.out.print("Escolha uma opção: ");
+
+            // Leitura da seleção
+            try{
+                selecao = Integer.parseInt(sc.nextLine());
+            }
+            catch(Exception e){
+                selecao = 99999; // Erro de leitura - Buffer cheio, repete operação
+            }
+
+            switch(selecao) {
+                case 99999:
+                    // ERRO DE LEITURA
+                    break;
+
+                case 0:
+                    // Fim programa
+                    return;
+
+                case 1:
+                    // Força Bruta
+                    posicao = Forca_Bruta.Busca(padrao, texto);
+                    System.out.println("Seu padrão foi encontrado na posição: " + posicao);
+                    break;
+
+                case 2:
+                    // KMP
+                    posicao = KMP.Busca(padrao, texto);
+                    System.out.println("Seu padrão foi encontrado na posição: " + posicao);
+                    break;
+
+                case 3:
+                    // Boyer-Moore
+                    posicao = Boyer_Moore.buscar(padrao, texto);
+                    System.out.println("Seu padrão foi encontrado na posição: " + posicao);
+                    break;
+                
+                case 4:
+                    // Ver texto
+                    System.out.println("\n"+texto);
+                    break;
+
+                default:
+                    System.out.println("\nOpção inválida. Por favor, escolha um número entre as opcoes.");
+            }
+            
+            
+            System.out.println("\nPessione qualquer tecla para continuar");
+            sc.nextLine();
+            System.out.print(clear);          // Limpa tela (windows)
+
+        }while(selecao != 0);
+
+        //sc.close();    // Não fechar o scanner pois da erro
     }
 
 }
