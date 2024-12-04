@@ -44,7 +44,7 @@ public class Main{
             System.out.println("8. Pesquisar pelo arquivo de nomes (indice indireto)");
             System.out.println("9. Ver pokemons de uma geração especifica (multilista)");
             System.out.println("10. Opções de Backup (LZW)");
-            System.out.println("11. Opções de casamento de padões (Força Bruta/KMP/Boyer-Moore)");
+            System.out.println("11. Opções de casamento de padões (Força Bruta/KMP/Boyer-Moore/Rabin-Karp)");
             System.out.println("0. Sair do Sistema");
             System.out.println("=====================================");
             
@@ -349,7 +349,8 @@ public class Main{
             System.out.println("1. Força Bruta");
             System.out.println("2. KMP");
             System.out.println("3. Boyer-Moore");
-            System.out.println("4. Vizualizar texto");
+            System.out.println("4. Rabin-Karp");
+            System.out.println("5. Vizualizar texto");
             System.out.println("0. Voltar ao menu principal");
             System.out.println("=====================================");
             
@@ -386,11 +387,17 @@ public class Main{
 
                 case 3:
                     // Boyer-Moore
-                    posicao = Boyer_Moore.buscar(padrao, texto);
+                    posicao = Boyer_Moore.Busca(padrao, texto);
                     System.out.println("Seu padrão foi encontrado na posição: " + posicao);
                     break;
                 
                 case 4:
+                    // Rabim-Karp
+                    posicao = Rabin_karp.Busca(padrao, texto);
+                    System.out.println("Seu padrão foi encontrado na posição: " + posicao);
+                    break;
+                
+                case 5:
                     // Ver texto
                     System.out.println("\n"+texto);
                     break;

@@ -3,6 +3,27 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Cifragem",
+      "request": "launch",
+      "mainClass": "Scr.Cifragem",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "Rabin_karp",
+      "request": "launch",
+      "mainClass": "Scr.Rabin_karp",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
+      "name": "kmp2",
+      "request": "launch",
+      "mainClass": "Scr.kmp2",
+      "projectName": "Pokedex_3875e89c"
+    },
+    {
+      "type": "java",
       "name": "KMP",
       "request": "launch",
       "mainClass": "Scr.KMP",

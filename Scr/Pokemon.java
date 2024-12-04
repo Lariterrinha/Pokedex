@@ -140,10 +140,20 @@ public class Pokemon{
 
     @Override
     public String toString() {
-        return "Pokemon [ id_pokedex = " + id_pokedex + ", name = " + name + ", classfication = " + classfication
-                + ", generation = " + generation + ", Data = " +  this.date.toString()  +" ]";
+
+        String texto =  "Pokemon [ id_pokedex = " + id_pokedex + ", name = " + name + ", classfication = " + classfication
+                            + ", generation = " + generation + ", Data = " +  this.date.toString();
+                
+        for (String string : abilities) {
+            texto += " " + string;
+        }
+
+        texto += " ]";
+
+        return texto;
     }
 
+    // Usado para busca por casamento de padões
     public String toString2() {
         String texto =  id_pokedex + " " + name + " " + attributes[0] + " " + attributes[1] + " " + attributes[2] + " " 
             + classfication + " " + generation + " " + date.toString() + " " + abilities.length;
@@ -179,7 +189,7 @@ public class Pokemon{
 
         dos.writeShort(abilities.length);
         for (int i= 0; i < abilities.length; i++){
-            dos.writeUTF(abilities[i]);
+            dos.writeUTF(Cifragem.cifragemDupla(abilities[i]));         // Escreve texto cifrado
         }
         
         return baos.toByteArray();
@@ -205,7 +215,7 @@ public class Pokemon{
         Short len = dis.readShort();
         this.abilities = new String[len];
         for (int i= 0; i < len; i++){
-            abilities[i] = dis.readUTF();
+            abilities[i] = Cifragem.decifragemDupla(dis.readUTF()); // Obtem texto já decifrado
         }
 
     }
