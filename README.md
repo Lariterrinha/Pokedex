@@ -20,9 +20,9 @@ Os links dos vídeos demonstrativos estão listados no arquivo VIDEOS.txt, na ra
 
 ## 🧩 Etapas do Projeto
 ### ✅ Etapa 1 — CRUD com Arquivo Sequencial
-Implementação das operações de criação, leitura, atualização e remoção lógica em um arquivo binário.
-
-Controle de espaços reaproveitáveis e cabeçalhos com informações úteis.
+- Implementação de operações básicas (criação, leitura, atualização e exclusão lógica) sobre um arquivo binário.
+  
+- Organização dos registros com cabeçalho e lápide
 
 ### ✅ Etapa 2 — Indexação
 Geração de três tipos de índices:
